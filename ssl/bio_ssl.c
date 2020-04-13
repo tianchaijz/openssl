@@ -139,6 +139,10 @@ static int ssl_read(BIO *b, char *buf, size_t size, size_t *readbytes)
         BIO_set_retry_special(b);
         retry_reason = BIO_RR_SSL_X509_LOOKUP;
         break;
+    case SSL_ERROR_WANT_SESSION_LOOKUP:
+        BIO_set_retry_special(b);
+        retry_reason = BIO_RR_SSL_SESSION_LOOKUP;
+        break;
     case SSL_ERROR_WANT_ACCEPT:
         BIO_set_retry_special(b);
         retry_reason = BIO_RR_ACCEPT;
@@ -206,6 +210,10 @@ static int ssl_write(BIO *b, const char *buf, size_t size, size_t *written)
     case SSL_ERROR_WANT_X509_LOOKUP:
         BIO_set_retry_special(b);
         retry_reason = BIO_RR_SSL_X509_LOOKUP;
+        break;
+    case SSL_ERROR_WANT_SESSION_LOOKUP:
+        BIO_set_retry_special(b);
+        retry_reason = BIO_RR_SSL_SESSION_LOOKUP;
         break;
     case SSL_ERROR_WANT_CONNECT:
         BIO_set_retry_special(b);
@@ -360,6 +368,10 @@ static long ssl_ctrl(BIO *b, int cmd, long num, void *ptr)
         case SSL_ERROR_WANT_X509_LOOKUP:
             BIO_set_retry_special(b);
             BIO_set_retry_reason(b, BIO_RR_SSL_X509_LOOKUP);
+            break;
+        case SSL_ERROR_WANT_SESSION_LOOKUP:
+            BIO_set_retry_special(b);
+            BIO_set_retry_reason(b, BIO_RR_SSL_SESSION_LOOKUP);
             break;
         default:
             break;
